@@ -38,12 +38,12 @@ Automatic building with Grunt
 
 All files are loaded dynamically from dev host.
 
-![dev](https://raw.github.com/nkbt/buil/master/doc/dev.png "Dev environment")
+![dev](https://raw.github.com/nkbt/build/master/doc/dev.png "Dev environment")
 
 
 ### Prod version
 
 All local files are built into single prod.js, 3rd-party libs are loaded from CDN.
 
-![prod](https://raw.github.com/nkbt/buil/master/doc/prod.png "Prod environment")
+![prod](https://raw.github.com/nkbt/build/master/doc/prod.png "Prod environment")
 

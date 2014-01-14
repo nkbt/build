@@ -6,7 +6,7 @@ var _ = require('underscore');
 
 
 var environment = process.argv[2] || 'dev';
-var assetsDir = environment === 'dev' && './public' || './build';
+var assetsDir = (environment === 'dev') ? './public' : './build';
 
 
 var file = new nodeStatic.Server(assetsDir);

@@ -1,0 +1,21 @@
+syntax: glob
+node_modules
+docs
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.rdb
+pids
+logs
+results
+npm-debug.log
+.idea
+.vagrant
+atlassian-ide-plugin.xml
+build/*
+uploads/*.*

@@ -32,3 +32,18 @@ Automatic building with Grunt
         node app <dev|prod>
 
 7. Go to [http://localhost:3000](http://localhost:3000)
+
+
+### Dev version
+
+All files are loaded dynamically from dev host.
+
+![dev](https://raw.github.com/nkbt/buil/master/doc/dev.png "Dev environment")
+
+
+### Prod version
+
+All local files are built into single prod.js, 3rd-party libs are loaded from CDN.
+
+![prod](https://raw.github.com/nkbt/buil/master/doc/prod.png "Prod environment")
+

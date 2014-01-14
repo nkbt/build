@@ -7,7 +7,7 @@ define('app/controllers/index', [
 		require(['txt!views/index/index.html', 'css!themeCss/index/index'], function (view) {
 			$('#content').html(view);
 			
-			setTimeout(component.init, 2000);
+			setTimeout(component.init, 500);
 		});
 	}
 

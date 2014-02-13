@@ -4,7 +4,7 @@ Automatic building with Grunt
 ### Includes:
 
 1. JSLint
-2. Testing with Buster
+2. Testing with Mocha + Chai
 3. Front-end building with RequireJS + RequireCSS
 
 ### Installation
@@ -18,7 +18,7 @@ Automatic building with Grunt
 3. Install dependencies:
 
         npm install
-        
+
 4. Run linter and perform tests:
 
         npm test

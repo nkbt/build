@@ -4,9 +4,16 @@ module.exports = function (grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		buster: {
+		simplemocha: {
 			test: {
-				config: 'test/buster.js'
+				src: ['test/*.js'],
+				options: {
+					globals: ['should'],
+					timeout: 3000,
+					ignoreLeaks: false,
+					ui: 'bdd',
+					reporter: 'tap'
+				}
 			}
 		},
 		requirejs: {
@@ -51,16 +58,13 @@ module.exports = function (grunt) {
 				}
 			},
 			test: {
-				src: ['test/**/*.js'],
+				src: ['test/*.js', 'test/**/*.js'],
 				options: {
-					jshintrc: '.jshintrc'
+					jshintrc: 'test/.jshintrc'
 				}
 			},
 			browser: {
-				src: [
-					'public/js/**/*.js',
-					'!public/js/vendor/**/*.js'
-				],
+				src: ['public/js/**/*.js', '!public/js/vendor/**/*.js'],
 				options: {
 					jshintrc: 'public/.jshintrc'
 				}
@@ -68,27 +72,28 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			gruntfile: {
-				files: '<%= jshint.gruntfile.src %>',
+				files: 'Gruntfile.js',
 				tasks: ['jshint:gruntfile']
 			},
 			test: {
-				files: '<%= jshint.test.src %>',
-				tasks: ['jshint:test', 'buster']
+				files: ['test/*.js', 'test/**/*.js'],
+				tasks: ['jshint:test', 'simplemocha']
 			},
 			browser: {
-				files: '<%= jshint.browser.src %>',
+				files: ['public/js/**/*.js', '!public/js/vendor/**/*.js'],
 				tasks: ['jshint:browser']
 			}
 		}
 	});
 
 	// These plugins provide necessary tasks.
-	grunt.loadNpmTasks('grunt-buster');
+	grunt.loadNpmTasks('grunt-simple-mocha');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'buster', 'requirejs']);
+	grunt.registerTask('default', ['jshint', 'simplemocha', 'requirejs']);
+	grunt.registerTask('test', 'simplemocha');
 
 };

@@ -4,23 +4,17 @@ module.exports = function (grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		simplemocha: {
-			test: {
-				src: ['test/*.js'],
-				options: {
-					globals: ['should'],
-					timeout: 3000,
-					ignoreLeaks: false,
-					ui: 'bdd',
-					reporter: 'tap'
-				}
-			}
+		mocha_phantomjs: {
+			options: {
+				reporter: 'spec'
+			},
+			all: ['public/test/**/*.html']
 		},
 		requirejs: {
 			compile: {
 				options: {
 					baseUrl: 'js',
-					appDir: 'public',
+					appDir: 'tmp/public',
 					dir: 'build',
 					siteRoot: '../',
 					modules: [
@@ -33,16 +27,18 @@ module.exports = function (grunt) {
 						dom: '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min',
 						bootstrap: '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min'
 					},
-					mainConfigFile: './public/js/prod.js',
+					mainConfigFile: './tmp/public/js/prod.js',
 					useStrict: true,
-					generateSourceMaps: true,
 					preserveLicenseComments: false,
 					findNestedDependencies: true,
-					optimize: 'uglify2',
+//					No optimizations
+//					optimize: 'uglify2',
+//					generateSourceMaps: true,
+					optimize: 'none',
 
 					buildCSS: true,
 					separateCSS: false,
-					optimizeCss: "node",
+					optimizeCss: 'node',
 					cssBase: "css/"
 				}
 
@@ -57,16 +53,16 @@ module.exports = function (grunt) {
 					jshintrc: '.jshintrc'
 				}
 			},
-			test: {
-				src: ['test/*.js', 'test/**/*.js'],
-				options: {
-					jshintrc: 'test/.jshintrc'
-				}
-			},
 			browser: {
-				src: ['public/js/**/*.js', '!public/js/vendor/**/*.js'],
+				src: ['public/js/**/*.js', '!public/js/vendor/**/*.js', '!public/test/**/*.js'],
 				options: {
 					jshintrc: 'public/.jshintrc'
+				}
+			},
+			browserTest: {
+				src: ['public/test/**/*.js', '!public/test/mocha.js', '!public/test/chai.js'],
+				options: {
+					jshintrc: 'public/test/.jshintrc'
 				}
 			}
 		},
@@ -75,25 +71,77 @@ module.exports = function (grunt) {
 				files: 'Gruntfile.js',
 				tasks: ['jshint:gruntfile']
 			},
-			test: {
-				files: ['test/*.js', 'test/**/*.js'],
-				tasks: ['jshint:test', 'simplemocha']
-			},
 			browser: {
 				files: ['public/js/**/*.js', '!public/js/vendor/**/*.js'],
 				tasks: ['jshint:browser']
+			}
+		},
+		svgmin: {
+			options: {
+				plugins: [
+					{
+						removeViewBox: false
+					},
+					{
+						removeUselessStrokeAndFill: false
+					}
+				]
+			},
+			dist: {
+				files: [
+					{
+						expand: true,
+						cwd: 'tmp/public/img',
+						src: ['**/*.svg'],
+						dest: 'tmp/public/img',
+						ext: '.svg'
+					}
+				]
+			}
+		},
+		clean: {
+			entity: {
+				src: 'public/js/entity/**/*.js'
+			},
+			build: {
+				src: 'build/'
+			},
+			tmp: {
+				src: 'tmp/'
+			}
+		},
+		copy: {
+			main: {
+				files: [
+					{expand: true, src: ['public/**'], dest: 'tmp/'}
+				]
+			}
+		},
+		autoprefixer: {
+			options: {
+				browsers: ['last 2 versions']
+			},
+			dist: {
+				expand: true,
+				src: 'tmp/public/css/**/*.css'
 			}
 		}
 	});
 
 	// These plugins provide necessary tasks.
+	grunt.loadNpmTasks('grunt-mocha-phantomjs');
+	grunt.loadNpmTasks('grunt-svgmin');
 	grunt.loadNpmTasks('grunt-simple-mocha');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
+	grunt.loadNpmTasks('grunt-autoprefixer');
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 
-	// Default task.
-	grunt.registerTask('default', ['jshint', 'simplemocha', 'requirejs']);
-	grunt.registerTask('test', 'simplemocha');
-
+//	grunt.registerTask('test', ['jshint', 'mocha_phantomjs']);
+	grunt.registerTask('test', ['jshint']);
+	grunt.registerTask('build', ['clean:build', 'copy', 'autoprefixer', 'svgmin', 'requirejs', 'clean:tmp']);
+	grunt.registerTask('default', ['test', 'build']);
+	grunt.registerTask('frontend', ['jshint:browser', 'jshint:browserTest', 'mocha_phantomjs']);
 };
